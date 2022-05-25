@@ -2,6 +2,9 @@ from enum import IntEnum
 
 
 class Gender(IntEnum):
+    """
+    性别
+    """
     MALE = 0
     FEMALE = 1
 

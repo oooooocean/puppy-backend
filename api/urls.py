@@ -5,7 +5,7 @@ from api.views import (
     user,
     user_info
 )
-from api.common.configuration import get_app_configuration
+import api.common.configuration as configuration
 
 app_name = 'api'
 
@@ -15,8 +15,13 @@ router.register('user', user.UserViewSet, basename='user')  # 用户
 pet_router = SimpleRouter()
 pet_router.register('pets', pet.PetViewSet, basename='pet')  # 宠物
 
+configuration_urlpatterns = [
+    path('app/', configuration.get_app_configuration),
+    path('pet/', configuration.get_pet_category)
+]
+
 urlpatterns = [
-    path('configuration/', get_app_configuration),
+    path('configuration/', include(configuration_urlpatterns)),
     path('user/<int:user_id>/info/',
          user_info.UserInfoViewSet.as_view({'get': 'retrieve', 'patch': 'update', 'post': 'create'})),
     path('', include(router.urls)),

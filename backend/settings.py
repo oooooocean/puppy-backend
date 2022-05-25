@@ -136,6 +136,15 @@ REST_FRAMEWORK = {
     'DATE_INPUT_FORMATS': '%Y-%m-%d',
     'TIME_FORMAT': '%H:%M:%S',
     'TIME_INPUT_FORMATS': '%H:%M:%S',
+    'DEFAULT_RENDERER_CLASSES': (
+        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+        'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'djangorestframework_camel_case.parser.CamelCaseFormParser',
+        'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',
+        'djangorestframework_camel_case.parser.CamelCaseJSONParser'
+    )
 }
 
 SIMPLE_JWT = {

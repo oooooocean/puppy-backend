@@ -16,7 +16,6 @@ class UserViewSet(BaseView,
     authentication_classes = [PuppyAuthentication]
     permission_classes = [IsAuthenticatedPermission]
     serializer_class = UserSerializer
-    pagination_class = None
     queryset = User.objects.all()
 
     @decorators.action(methods=['post'], detail=False, permission_classes=[], authentication_classes=[])

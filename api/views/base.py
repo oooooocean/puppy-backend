@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.exceptions import APIException
 from api.common.exceptions import SaoException, ERROR_CODE_1000
 from api.common.responses import fail_response, FailResponse
+from django.http.response import Http404
 
 
 class BaseView(APIView):
@@ -13,6 +14,8 @@ class BaseView(APIView):
             return fail_response(exc)
         elif isinstance(exc, APIException):
             return fail_response(SaoException(code=1007, msg=str(exc.detail)))
+        elif isinstance(exc, Http404):
+            return fail_response(SaoException(code=1006, msg=str(exc)))
         else:
             response = super(BaseView, self).handle_exception(exc)
             return fail_response(SaoException(code=1007, msg=str(exc)), http_status=response.status_code)

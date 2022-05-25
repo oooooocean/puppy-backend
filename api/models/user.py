@@ -1,8 +1,12 @@
 from django.db import models
 from api.models.gender import Gender
+from api.common.configuration import Configuration
 
 
 class User(models.Model):
+    """
+    用户
+    """
     is_active = True
     is_authenticated = True
 
@@ -13,13 +17,16 @@ class User(models.Model):
 
     @property
     def pet_count(self):
-        return len(self.pets.all())
+        return self.pets.count()
 
 
 class UserInfo(models.Model):
+    """
+    用户属性
+    """
     nickname = models.CharField('昵称', max_length=20)
     gender = models.IntegerField('性别', choices=[(i.value, str(i)) for i in Gender], null=True)
-    introduction = models.CharField('宠物寄语', max_length=200, blank=True)
+    introduction = models.CharField('宠物寄语', max_length=int(Configuration.MAX_INTRODUCTION.evaluation), blank=True)
     avatar = models.CharField('照片', max_length=500, blank=True)
     create_time = models.DateTimeField('更新时间', auto_now_add=True)
     update_time = models.DateTimeField('创建时间', auto_now=True)

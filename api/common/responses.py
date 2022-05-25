@@ -3,6 +3,9 @@ from api.common.exceptions import ERROR_CODE_0, SaoException
 
 
 class FailResponse(Response):
+    """
+    失败的响应
+    """
     pass
 
 

@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, decorators, response
 from api.models.pet import Pet
 from api.seralizers.pet import PetSerializer
 from api.common.authentication import PuppyAuthentication
