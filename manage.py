@@ -2,11 +2,21 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from enum import Enum
+
+
+class Environment(Enum):
+    LOCAL = 'backend.settings_base'
+    DEVELOP = 'backend.settings_develop'
+    PRODUCT = 'backend.settings_product'
+
+
+environment = Environment.LOCAL
 
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', environment.value)
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
