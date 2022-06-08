@@ -1,6 +1,6 @@
 from enum import IntEnum
 from api.models.category.dog import DogCategory
-from api.models.support import IdAndName
+from api.models.category.cat import CatCategory
 
 
 class PetCategory(IntEnum):
@@ -14,15 +14,27 @@ class PetCategory(IntEnum):
             case PetCategory.CAT:
                 return '猫咪'
 
-    def sub_category(self) -> list:
+    @property
+    def sub_category(self):
         """
         子类
         """
         match self:
             case PetCategory.DOG:
-                return [IdAndName(dog.value, str(dog))._asdict() for dog in DogCategory]
+                return DogCategory
             case PetCategory.CAT:
-                return []
+                return CatCategory
+
+    @property
+    def hot_category(self) -> list:
+        """
+        热门分类
+        """
+        match self:
+            case PetCategory.DOG:
+                return [DogCategory.GOLDEN, DogCategory.LABRADOR, DogCategory.BORDER_COLLIE, DogCategory.SATSUMA]
+            case PetCategory.CAT:
+                return [CatCategory.SNOWSHOE]
 
     def to_dict(self) -> dict:
         """
@@ -31,6 +43,7 @@ class PetCategory(IntEnum):
         return {
             'id': self.value,
             'name': str(self),
-            'sub_category': self.sub_category()
+            'sub_category': [i.to_dict() for i in self.sub_category],
+            'hot_category': [i.value for i in self.hot_category]
         }
 

@@ -8,6 +8,7 @@ from django.http.response import Http404
 
 class BaseView(APIView):
     def handle_exception(self, exc):
+        print(exc)
         if isinstance(exc, (exceptions.NotAuthenticated, exceptions.AuthenticationFailed)):
             return fail_response(ERROR_CODE_1000)
         elif isinstance(exc, SaoException):

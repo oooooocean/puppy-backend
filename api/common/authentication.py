@@ -1,5 +1,5 @@
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from api.models.user import User
+from api.models.user.user import User
 
 
 class PuppyAuthentication(JWTAuthentication):

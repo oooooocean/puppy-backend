@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-fx$u_b^r$ldsv(e^!nqo=49j%b!q+-fj*evc5p4p6z6!4l-#fa
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'thirdparty.apps.ThirdpartyConfig',
     'rest_framework',
+    'django_filters',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -77,7 +78,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'buppy',
+        'NAME': 'puppy',
         'HOST': '127.0.0.1',
         'USER': 'root',
         'PASSWORD': 'bei1202jing'
@@ -107,7 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'  # UTC
 
 USE_I18N = True
 
@@ -131,12 +132,12 @@ REST_FRAMEWORK = {
     'UNAUTHENTICATED_TOKEN': None,
     'DEFAULT_PAGINATION_CLASS': 'api.common.pagination.Pagination',
     'PAGE_SIZE': 20,
-    'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
-    'DATETIME_INPUT_FORMATS': '%Y-%m-%d %H:%M:%S',
-    'DATE_FORMAT': '%Y-%m-%d',
-    'DATE_INPUT_FORMATS': '%Y-%m-%d',
-    'TIME_FORMAT': '%H:%M:%S',
-    'TIME_INPUT_FORMATS': '%H:%M:%S',
+    'DATETIME_FORMAT': '%Y-%m-%dT%H:%M:%S.%fZ',
+    'DATETIME_INPUT_FORMATS': ['%Y-%m-%dT%H:%M:%S.%fZ'],
+    'DATE_FORMAT': '%Y-%m-%dT%H:%M:%S.%fZ',
+    'DATE_INPUT_FORMATS': ['%Y-%m-%dT%H:%M:%S.%fZ'],
+    'TIME_FORMAT': '%Y-%m-%dT%H:%M:%S.%fZ',
+    'TIME_INPUT_FORMATS': '%Y-%m-%dT%H:%M:%S.%fZ',
     'DEFAULT_RENDERER_CLASSES': (
         'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
         'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
@@ -145,7 +146,8 @@ REST_FRAMEWORK = {
         'djangorestframework_camel_case.parser.CamelCaseFormParser',
         'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',
         'djangorestframework_camel_case.parser.CamelCaseJSONParser'
-    )
+    ),
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
 SIMPLE_JWT = {

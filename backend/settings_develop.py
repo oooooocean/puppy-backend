@@ -1,7 +1,5 @@
 from backend.settings_base import *
 
-ALLOWED_HOSTS = ['*']
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',

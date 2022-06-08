@@ -7,7 +7,7 @@ from api.common.permissions import IsAuthenticatedPermission
 from api.common.responses import success_response
 from manage import environment, Environment
 from time import time
-from api.models.support import IdAndName
+from api.models.support.support import IdAndName
 from uuid import uuid3
 
 access_key = 'SbwkTlo_6Z1VdYRNY_XkRmPRIUFg8PmqAagEMlxr'
