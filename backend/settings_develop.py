@@ -9,3 +9,5 @@ DATABASES = {
         'PASSWORD': 'BEI1202jing_'
     }
 }
+
+STATIC_ROOT = '/static/'

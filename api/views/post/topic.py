@@ -15,6 +15,6 @@ class PostTopicViewSet(BaseView,
     permission_classes = [IsAuthenticatedPermission]
     serializer_class = PostTopicSerializer
     pagination_class = None
-    queryset = PostTopic.objects.filter(audit_status=AuditStatus.SUCCESS.value)
+    queryset = PostTopic.objects.filter(audit_status=AuditStatus.SUCCESS.value).prefetch_related('posts')
 
 

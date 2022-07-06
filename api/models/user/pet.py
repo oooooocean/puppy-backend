@@ -30,7 +30,7 @@ class PetIntrinsic(models.Model):
     gender = models.IntegerField('性别', choices=[(i.value, str(i)) for i in Gender])
     category = models.IntegerField('类别', choices=[(i.value, str(i)) for i in PetCategory])
     sub_category = models.IntegerField('子类别')
-    birthday = models.DateField('生日')
+    birthday = models.DateTimeField('生日')
     neuter = models.BooleanField('是否绝育', null=True)
 
 
@@ -45,7 +45,7 @@ class PetIntrinsicSerializer(serializers.ModelSerializer):
         """
         category = PetCategory(attrs['category'])
         subcategory = attrs['sub_category']
-        if subcategory not in [i['id'] for i in category.sub_category()]:
+        if subcategory not in [i.value for i in category.sub_category]:
             raise serializers.ValidationError('sub_category 不在范围')
         return attrs
 

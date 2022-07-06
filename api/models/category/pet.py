@@ -1,6 +1,6 @@
 from enum import IntEnum
-from api.models.category.dog import DogCategory
-from api.models.category.cat import CatCategory
+from .dog import DogCategory
+from .cat import CatCategory
 
 
 class PetCategory(IntEnum):

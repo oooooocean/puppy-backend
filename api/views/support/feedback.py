@@ -1,4 +1,4 @@
-from rest_framework import viewsets, mixins, generics
+from rest_framework import generics
 from ..base import BaseView
 from api.common.authentication import PuppyAuthentication
 from api.common.permissions import IsAuthenticatedPermission

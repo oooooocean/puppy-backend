@@ -1,7 +1,6 @@
 from django.db import models
 from enum import IntEnum
 from rest_framework import serializers
-from django.contrib import admin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.admin import GenericTabularInline

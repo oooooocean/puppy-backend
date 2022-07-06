@@ -131,13 +131,7 @@ REST_FRAMEWORK = {
     'UNAUTHENTICATED_USER': None,
     'UNAUTHENTICATED_TOKEN': None,
     'DEFAULT_PAGINATION_CLASS': 'api.common.pagination.Pagination',
-    'PAGE_SIZE': 20,
-    'DATETIME_FORMAT': '%Y-%m-%dT%H:%M:%S.%fZ',
-    'DATETIME_INPUT_FORMATS': ['%Y-%m-%dT%H:%M:%S.%fZ'],
-    'DATE_FORMAT': '%Y-%m-%dT%H:%M:%S.%fZ',
-    'DATE_INPUT_FORMATS': ['%Y-%m-%dT%H:%M:%S.%fZ'],
-    'TIME_FORMAT': '%Y-%m-%dT%H:%M:%S.%fZ',
-    'TIME_INPUT_FORMATS': '%Y-%m-%dT%H:%M:%S.%fZ',
+    'PAGE_SIZE': 10,
     'DEFAULT_RENDERER_CLASSES': (
         'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
         'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
@@ -154,4 +148,14 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'AUTH_HEADER_TYPES': ('',),
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
 }

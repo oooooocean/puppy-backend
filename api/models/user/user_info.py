@@ -12,6 +12,7 @@ class UserInfo(models.Model):
     gender = models.IntegerField('性别', choices=[(i.value, str(i)) for i in Gender], null=True)
     introduction = models.CharField('宠物寄语', max_length=int(Configuration.MAX_INTRODUCTION.evaluation), blank=True)
     avatar = models.CharField('照片', max_length=500, blank=True)
+    center_bg = models.CharField('个人中心背景', max_length=500, blank=True)
     create_time = models.DateTimeField('更新时间', auto_now_add=True)
     update_time = models.DateTimeField('创建时间', auto_now=True)
 

@@ -1,3 +1,5 @@
+import http
+
 from rest_framework import exceptions
 from rest_framework.views import APIView
 from rest_framework.exceptions import APIException
@@ -7,7 +9,12 @@ from django.http.response import Http404
 
 
 class BaseView(APIView):
+    def initial(self, request, *args, **kwargs):
+        request.method = request.method.lower()
+        super(BaseView, self).initial(request, *args, **kwargs)
+
     def handle_exception(self, exc):
+        print(type(exc))
         print(exc)
         if isinstance(exc, (exceptions.NotAuthenticated, exceptions.AuthenticationFailed)):
             return fail_response(ERROR_CODE_1000)
@@ -18,8 +25,14 @@ class BaseView(APIView):
         elif isinstance(exc, Http404):
             return fail_response(SaoException(code=1006, msg=str(exc)))
         else:
-            response = super(BaseView, self).handle_exception(exc)
-            return fail_response(SaoException(code=1007, msg=str(exc)), http_status=response.status_code)
+            http_status = http.HTTPStatus.INTERNAL_SERVER_ERROR
+            try:
+                response = super(BaseView, self).handle_exception(exc)
+                http_status = response.status_code
+            except Exception:
+                http_status = http.HTTPStatus.INTERNAL_SERVER_ERROR
+            finally:
+                return fail_response(SaoException(code=1007, msg=str(exc)), http_status=http_status)
 
     def finalize_response(self, request, response, *args, **kwargs):
         if not isinstance(response, FailResponse):

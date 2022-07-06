@@ -1,15 +1,17 @@
+from enum import IntEnum
+from rest_framework import serializers, relations, fields
 from django.db import models, transaction
 from django.contrib import admin
 from django.contrib.contenttypes.fields import GenericRelation
-from api.models.base.audit_mixin import AuditMixin
-from api.models.user.user import User
-from api.models.user.pet import Pet
-from api.models.public.media import Media
-from enum import IntEnum
-from rest_framework import serializers, relations
-from ..user.user import UserInfoSerializer
+from ..base.audit_mixin import AuditMixin
+from ..user.user import User, UserInfoSerializer, UserSimpleSerializer
+from ..user.pet import Pet
+from ..public.media import Media, MediaSerializer, MediaInline
 from ..public.audit import AuditStatus
-from api.models.public.media import MediaSerializer, MediaInline
+from ..public.praise import Praise
+from ..public.comment import Comment
+from ..public.address import Address, AddressSerializer
+from .topic import PostTopicSerializer, PostTopic
 
 
 class PostType(IntEnum):
@@ -37,15 +39,38 @@ class Post(AuditMixin):
     pets = models.ManyToManyField(Pet, related_name='posts')
     collectors = models.ManyToManyField(User, related_name='collections')
     medias = GenericRelation(Media)
+    praises = GenericRelation(Praise)
+    comments = GenericRelation(Comment)
+    addresses = GenericRelation(Address)
 
     class Meta(object):
         verbose_name = '帖子'
+        ordering = ('-pk',)  # 主键倒序排列
+
+    def social(self, user: int):
+        return {
+            'praiseCount': self.praises.count(),
+            'commentCount': self.comments.count(),
+            'hasPraise': self.praises.filter(owner=user).exists(),
+            'hasFollow': self.owner.fans.filter(pk=user).exists()
+        }
+
+    @property
+    def address(self):
+        return self.addresses.get()
+
+    def __str__(self):
+        return f'帖子: {self.pk}'
 
 
 class PostSerializer(serializers.ModelSerializer):
+    medias = MediaSerializer(many=True)
     owner_info = UserInfoSerializer(source='owner.info', read_only=True)
     owner = relations.PrimaryKeyRelatedField(read_only=True)
-    medias = MediaSerializer(many=True)
+    topics = PostTopicSerializer(many=True, required=False)
+    pets = relations.PrimaryKeyRelatedField(many=True, required=False, queryset=Pet.objects.all())
+    notice_users = UserSimpleSerializer(many=True, required=False)
+    address = AddressSerializer(required=False)
 
     class Meta:
         model = Post
@@ -53,14 +78,28 @@ class PostSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         medias_json = validated_data.pop('medias')
-        pet_json = validated_data.pop('pets')
+        pet_json = validated_data.pop('pets', None)
+        address_json = validated_data.pop('address', None)
+        topic_json = validated_data.pop('topics', None)
+        notice_json = validated_data.pop('notice_users', None)
         validated_data['owner'] = self.context['request'].user
 
         with transaction.atomic():
             post = Post(**validated_data)
             post.audit_status = AuditStatus.SUCCESS
             post.save()
-            post.pets.set(pet_json)
+
+            if pet_json:
+                post.pets.set(pet_json)
+            if address_json:
+                post.addresses.add(Address(**address_json), bulk=False)
+            if topic_json:
+                topics = PostTopic.objects.filter(pk__in=topic_json).all()
+                post.topics.set(topics)
+            if notice_json:
+                notices = post.owner.idols.filter(pk__in=notice_json).all()
+                post.notice_users.set(notices)
+
             medias = [Media(type=media['type'], key=media['key'], content_object=post) for media in medias_json]
             Media.objects.bulk_create(medias)
             return post
@@ -80,10 +119,11 @@ class PostSerializer(serializers.ModelSerializer):
                 instance.pets.set(pet_json)  # 直接重置, 不需要删除
             return query.first()
 
-    def to_representation(self, instance):
+    def to_representation(self, instance: Post):
         json = super(PostSerializer, self).to_representation(instance)
         pets = Pet.objects.filter(pk__in=json['pets'])
-        json['pets'] = [{'id': pet.pk, 'name': pet.nickname, 'avatar': pet.avatar} for pet in pets]
+        json['pets'] = [{'id': pet.pk, 'nickname': pet.nickname, 'avatar': pet.avatar} for pet in pets]
+        json['social'] = instance.social(self.context['request'].user.pk)
         return json
 
 

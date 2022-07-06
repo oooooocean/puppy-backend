@@ -11,4 +11,3 @@ class Pagination(PageNumberPagination):
             ('count', self.page.paginator.count),
             ('results', data)
         ]))
-

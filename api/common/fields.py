@@ -1,5 +1,5 @@
 from rest_framework.fields import ChoiceField, ListField, CharField
-from api.models.support import IdAndName
+from api.models.support.support import IdAndName
 
 
 class IdAndNameField(ChoiceField):
