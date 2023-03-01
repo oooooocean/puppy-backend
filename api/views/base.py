@@ -9,9 +9,9 @@ from django.http.response import Http404
 
 
 class BaseView(APIView):
-    def initial(self, request, *args, **kwargs):
+    def initialize_request(self, request, *args, **kwargs):
         request.method = request.method.lower()
-        super(BaseView, self).initial(request, *args, **kwargs)
+        return super(BaseView, self).initialize_request(request, *args, **kwargs)
 
     def handle_exception(self, exc):
         print(type(exc))
@@ -29,7 +29,7 @@ class BaseView(APIView):
             try:
                 response = super(BaseView, self).handle_exception(exc)
                 http_status = response.status_code
-            except Exception:
+            except:
                 http_status = http.HTTPStatus.INTERNAL_SERVER_ERROR
             finally:
                 return fail_response(SaoException(code=1007, msg=str(exc)), http_status=http_status)
